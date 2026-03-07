@@ -1,4 +1,6 @@
-function router(req, res) {
+const getBody = require("./helpers/getBody");
+
+async function router(req, res) {
   const { method, url } = req;
 
   if (method === 'GET' && url === '/order/list') {
@@ -11,8 +13,9 @@ function router(req, res) {
     res.end(JSON.stringify({ message: `buscar pedido ${orderId}` }));
 
   } else if (method === 'POST' && url === '/order') {
+    const body = await getBody(req);
     res.writeHead(201, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ message: 'criar pedido' }));
+    res.end(JSON.stringify({ message: 'Body recebido: ', body }));
 
   } else if (method === 'PUT' && url.startsWith('/order/')) {
     const orderId = url.split('/')[2];
