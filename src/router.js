@@ -1,4 +1,10 @@
+//Helpers
 const getBody = require('./helpers/getBody');
+const serveSwagger = require('./helpers/serveSwagger');
+const verifyToken = require('./helpers/verifyToken');
+
+//Controllers
+const login = require('./controllers/login');
 const createOrder = require('./controllers/createOrder');
 const getOrder = require('./controllers/getOrder');
 const listOrders = require('./controllers/listOrders');
@@ -7,6 +13,17 @@ const deleteOrder = require('./controllers/deleteOrder');
 
 async function router(req, res) {
   const { method, url } = req;
+
+  if (url.startsWith('/docs')) {
+    return serveSwagger(req, res);
+  }
+
+  if (method === 'POST' && url === '/auth/login') {
+    const body = await getBody(req);
+    return await login(req, res, body);
+  }
+
+  if (!verifyToken(req, res)) return;
 
   if (method === 'GET' && url === '/order/list') {
     await listOrders(req, res);
