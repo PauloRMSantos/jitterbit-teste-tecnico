@@ -1,0 +1,202 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Order API",
+    "version": "1.0.0",
+    "description": "API para gerenciamento de pedidos"
+  },
+  "servers": [
+    { "url": "http://localhost:3000" }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "paths": {
+    "/auth/login": {
+      "post": {
+        "summary": "Autenticar e obter token JWT",
+        "tags": ["Auth"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["username", "password"],
+                "properties": {
+                  "username": { "type": "string", "example": "admin" },
+                  "password": { "type": "string", "example": "admin123" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login realizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": { "type": "string", "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Campos obrigatórios não informados" },
+          "401": { "description": "Credenciais inválidas" }
+        }
+      }
+    },
+    "/order": {
+      "post": {
+        "summary": "Criar um novo pedido",
+        "tags": ["Orders"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["valorTotal", "dataCriacao", "items"],
+                "properties": {
+                  "numeroPedido": {
+                    "type": "string",
+                    "example": "v10089015vdb-01",
+                    "description": "Opcional. Se não informado, o servidor gera automaticamente."
+                  },
+                  "valorTotal": { "type": "number", "example": 10000 },
+                  "dataCriacao": { "type": "string", "format": "date-time", "example": "2023-07-19T12:24:11.529Z" },
+                  "items": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": ["idItem", "quantidadeItem", "valorItem"],
+                      "properties": {
+                        "idItem": { "type": "string", "example": "2434" },
+                        "quantidadeItem": { "type": "integer", "example": 1 },
+                        "valorItem": { "type": "number", "example": 1000 }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Pedido criado com sucesso" },
+          "400": { "description": "Dados inválidos" },
+          "401": { "description": "Não autorizado" },
+          "500": { "description": "Erro interno" }
+        }
+      }
+    },
+    "/order/list": {
+      "get": {
+        "summary": "Listar todos os pedidos",
+        "tags": ["Orders"],
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Lista de pedidos retornada com sucesso" },
+          "401": { "description": "Não autorizado" },
+          "500": { "description": "Erro interno" }
+        }
+      }
+    },
+    "/order/{orderId}": {
+      "get": {
+        "summary": "Buscar pedido por ID",
+        "tags": ["Orders"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "example": "v10089015vdb-01"
+          }
+        ],
+        "responses": {
+          "200": { "description": "Pedido encontrado" },
+          "401": { "description": "Não autorizado" },
+          "404": { "description": "Pedido não encontrado" },
+          "500": { "description": "Erro interno" }
+        }
+      },
+      "put": {
+        "summary": "Atualizar pedido",
+        "tags": ["Orders"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "example": "v10089015vdb-01"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "valorTotal": { "type": "number", "example": 20000 },
+                  "items": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "idItem": { "type": "string", "example": "2434" },
+                        "quantidadeItem": { "type": "integer", "example": 2 },
+                        "valorItem": { "type": "number", "example": 1000 }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Pedido atualizado com sucesso" },
+          "401": { "description": "Não autorizado" },
+          "404": { "description": "Pedido não encontrado" },
+          "500": { "description": "Erro interno" }
+        }
+      },
+      "delete": {
+        "summary": "Deletar pedido",
+        "tags": ["Orders"],
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "example": "v10089015vdb-01"
+          }
+        ],
+        "responses": {
+          "200": { "description": "Pedido deletado com sucesso" },
+          "401": { "description": "Não autorizado" },
+          "404": { "description": "Pedido não encontrado" },
+          "500": { "description": "Erro interno" }
+        }
+      }
+    }
+  }
+}
