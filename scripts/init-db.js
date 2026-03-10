@@ -1,5 +1,3 @@
-// scripts/init-db.js
-// Roda o init.sql no banco na primeira vez (ou se as tabelas ainda não existirem)
 
 const fs = require("fs");
 const path = require("path");
@@ -38,4 +36,4 @@ async function initDb() {
   }
 }
 
-initDb();
+initDb().finally(() => process.exit(0));
