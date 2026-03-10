@@ -1,0 +1,42 @@
+services:
+  - type: web
+    name: jitterbit-order-api
+    runtime: node
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: DB_HOST
+        fromDatabase:
+          name: jitterbit-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: jitterbit-db
+          property: port
+      - key: DB_USER
+        fromDatabase:
+          name: jitterbit-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: jitterbit-db
+          property: password
+      - key: DB_NAME
+        fromDatabase:
+          name: jitterbit-db
+          property: database
+      - key: PORT
+        value: 3000
+      - key: API_USER
+        sync: false  # defina manualmente no painel do Render
+      - key: API_PASSWORD
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_EXPIRES_IN
+        value: 1h
+
+databases:
+  - name: jitterbit-db
+    databaseName: jitterbit
+    user: jitterbit_user

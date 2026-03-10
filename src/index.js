@@ -3,6 +3,7 @@ require ('dotenv').config();
 const http = require('http');
 const pool = require('./db/connection');
 const router = require('./router');
+const keepAlive = require("./helpers/keepAlive");
 
 const PORT = process.env.PORT || 3000;
 
@@ -18,6 +19,7 @@ async function startServer() {
         server.listen(PORT, () => {
             console.log(`Servidor rodando na porta ${PORT}`);
         })
+        keepAlive();
     } catch (err) {
         console.error('Erro de conexão:', err);
         process.exit(1);

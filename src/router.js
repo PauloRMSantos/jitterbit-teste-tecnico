@@ -10,6 +10,7 @@ const getOrder = require('./controllers/getOrder');
 const listOrders = require('./controllers/listOrders');
 const updateOrder = require('./controllers/updateOrder');
 const deleteOrder = require('./controllers/deleteOrder');
+const health = require("./controllers/health");
 
 async function router(req, res) {
   const { method, url } = req;
@@ -17,6 +18,7 @@ async function router(req, res) {
   if (url.startsWith('/docs')) {
     return serveSwagger(req, res);
   }
+  if (method === "GET" && pathname === "/health") return health(req, res);
 
   if (method === 'POST' && url === '/auth/login') {
     const body = await getBody(req);
