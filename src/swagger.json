@@ -6,6 +6,7 @@
     "description": "API para gerenciamento de pedidos"
   },
   "servers": [
+    { "url": "https://jitterbit-order-api.onrender.com" },
     { "url": "http://localhost:3000" }
   ],
   "components": {
