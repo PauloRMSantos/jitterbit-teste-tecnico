@@ -18,7 +18,7 @@ async function router(req, res) {
   if (url.startsWith('/docs')) {
     return serveSwagger(req, res);
   }
-  if (method === "GET" && pathname === "/health") return health(req, res);
+  if (method === "GET" && url === "/health") return health(req, res);
 
   if (method === 'POST' && url === '/auth/login') {
     const body = await getBody(req);
