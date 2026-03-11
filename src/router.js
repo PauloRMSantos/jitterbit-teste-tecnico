@@ -15,9 +15,20 @@ const health = require("./controllers/health");
 async function router(req, res) {
   const { method, url } = req;
 
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+  // Preflight OPTIONS
+  if (method === 'OPTIONS') {
+    res.writeHead(204);
+    return res.end();
+  }
+
   if (url.startsWith('/docs')) {
     return serveSwagger(req, res);
   }
+
   if (method === "GET" && url === "/health") return health(req, res);
 
   if (method === 'POST' && url === '/auth/login') {
@@ -31,7 +42,7 @@ async function router(req, res) {
     await listOrders(req, res);
 
   } else if (method === 'GET' && url.startsWith('/order/')) {
-    const orderId = url.split('/')[2]; // extrai o ID da URL
+    const orderId = url.split('/')[2];
     await getOrder(req, res, orderId);
 
   } else if (method === 'POST' && url === '/order') {
